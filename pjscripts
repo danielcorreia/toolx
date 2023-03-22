@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+# NOTE: script dependencies: jq, rg, fzf
+
+script_directory=${1:-./}  # use first argument or default to "./"
+
+script_path="${script_directory%/}/package.json"  # strip trailing slash and join filename
+
+# select script from package.json with fzf
+selected_line=$(cat $script_path | jq -r ".scripts" | fzf )
+selected_script=$(echo $selected_line | rg '"(.+)":.*' -r '$1')
+
+# traverse parent directories up to HOME
+current_dir=$(pwd)
+while [ $current_dir != $HOME ]
+do
+  # check whether there's a package manager (yarn or npm)
+  if [[ -f "yarn.lock" ]]; then
+    package_manager="yarn "
+    break
+  elif [[ -f "package-lock.json" ]]; then
+    package_manager="npm run "
+    break
+  else
+    package_manager=""
+  fi
+
+  # set new parent directory
+  current_dir=$(dirname "$current_dir")
+  cd $current_dir
+done
+
+# build command
+command="${package_manager}${selected_script}"
+
+# copy to clipboard
+echo -n $command | pbcopy
+
+# pretty print colors
+light_green="\033[92m"
+endcolor="\033[0m"
+
+# display message
+echo -e "Added to clipboard: ${light_green}${command}${endcolor}"
