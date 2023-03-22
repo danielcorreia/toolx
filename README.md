@@ -4,4 +4,6 @@
 
 Fuzzy find your package.json scripts.
 
-Requires: jq, rg and fzf
+Requires: [jq](https://stedolan.github.io/jq/),
+[rg](https://github.com/BurntSushi/ripgrep) and
+[fzf](https://github.com/junegunn/fzf)
