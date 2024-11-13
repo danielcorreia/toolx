@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# set -x # debug
+
+selected_path=$(find ~/work ~/personal -d -mindepth 1 -maxdepth 1 | fzf)
+
+selected_name=$(basename $selected_path | tr . _)
+
+if [[ -z $selected_path ]] || [[ -z $selected_name ]]; then
+	# nothing selected, get out of here
+	exit 1
+fi
+
+is_tmux_running=$(pgrep tmux)
+
+if [[ -z $is_tmux_running ]]; then
+	# created session and open tmux
+	tmux new-session -s $selected_name -c $selected_path
+	exit 0
+fi
+
+if ! tmux has-session -t=$selected_name 2> /dev/null; then
+	# create detached session
+	tmux new-session -s $selected_name -c $selected_path -d
+fi
+
+# TMUX variable is set when inside tmux
+is_inside_tmux=$TMUX
+
+if [[ -z $TMUX ]]; then
+	tmux attach -t $selected_name
+else
+	tmux switch-client -t $selected_name
+fi
