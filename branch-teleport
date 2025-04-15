@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Switch branches fast
+
+# search branches
+local_branches=$(git branch | tr -d '*' | tr -d [:blank:])
+
+# select branch
+selected_branch=$(echo "$local_branches" | fzf --height 12 --border --layout reverse)
+
+# validate
+if [ -z "${selected_branch}" ]; then
+  exit 1
+fi
+
+# change
+git switch $selected_branch
