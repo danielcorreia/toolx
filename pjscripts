@@ -14,11 +14,14 @@ current_dir=$(pwd)
 while [ $current_dir != $HOME ]
 do
   # check whether there's a package manager (yarn or npm)
-  if [[ -f "yarn.lock" ]]; then
+  if [[ -f "package-lock.json" ]]; then
+    package_manager="npm run "
+    break
+  elif [[ -f "yarn.lock" ]]; then
     package_manager="yarn "
     break
-  elif [[ -f "package-lock.json" ]]; then
-    package_manager="npm run "
+  elif [[ -f "pnpm-lock.yaml" ]]; then
+    package_manager="pnpm "
     break
   else
     package_manager=""
