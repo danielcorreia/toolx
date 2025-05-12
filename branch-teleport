@@ -7,7 +7,7 @@ local_branches=$(git branch | tr -d '*' | tr -d [:blank:])
 # select branch
 selected_branch=$( \
   echo "$local_branches" | \
-  fzf --preview 'git log -12 --oneline {-1}' \
+  fzf --preview 'git log -12 --oneline --color=always {-1}' \
   --height 12 --border --layout reverse \
   --bind 'ctrl-u:preview-up,ctrl-d:preview-down'
 )
