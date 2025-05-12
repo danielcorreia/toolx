@@ -5,7 +5,12 @@
 local_branches=$(git branch | tr -d '*' | tr -d [:blank:])
 
 # select branch
-selected_branch=$(echo "$local_branches" | fzf --height 12 --border --layout reverse)
+selected_branch=$( \
+  echo "$local_branches" | \
+  fzf --preview 'git log -12 --oneline {-1}' \
+  --height 12 --border --layout reverse \
+  --bind 'ctrl-u:preview-up,ctrl-d:preview-down'
+)
 
 # validate
 if [ -z "${selected_branch}" ]; then
