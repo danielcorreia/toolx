@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+"""
+Log all your commits from last working day
+"""
+import subprocess
+from datetime import datetime, timedelta
+
+
+def get_author_email():
+    author_email = subprocess.check_output([
+        "git",
+        "config",
+        "--local",
+        "user.email"
+    ])
+
+    return author_email.decode().strip()
+
+
+def get_last_working_day():
+    today = datetime.now()
+    weekday = today.weekday()  # Monday is 0, Sunday is 6
+
+    if weekday == 0:  # Monday → last Friday
+        delta = 3
+    elif weekday == 6:  # Sunday → last Friday
+        delta = 2
+    elif weekday == 5:  # Saturday → last Friday
+        delta = 1
+    else:  # Tuesday to Friday → yesterday
+        delta = 1
+
+    last_working_day = today - timedelta(days=delta)
+    return last_working_day.strftime("%Y-%m-%d")
+
+
+def run_git_log_since_last_working_day():
+    author_email = get_author_email()
+    since_date = get_last_working_day()
+
+    print(f"Git log since {since_date} for {author_email}")
+
+    subprocess.run([
+        "git", 
+        "log", 
+        f"--since={since_date}", 
+        "--until=yesterday", 
+        "--all", 
+        "--no-merges", 
+        "--oneline", 
+        f"--author={author_email}"
+    ])
+
+
+if __name__ == '__main__':
+    run_git_log_since_last_working_day()
