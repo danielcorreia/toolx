@@ -10,7 +10,6 @@ def get_author_email():
     author_email = subprocess.check_output([
         "git",
         "config",
-        "--local",
         "user.email"
     ])
 
