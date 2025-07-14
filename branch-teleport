@@ -11,7 +11,7 @@ selected_branch=$( \
   --height 12 \
   --reverse \
   --border --border-label " Branches " \
-  --bind 'ctrl-u:preview-up,ctrl-d:preview-down'
+  --bind 'ctrl-space:toggle-preview,ctrl-u:preview-up,ctrl-d:preview-down'
 )
 
 # validate
