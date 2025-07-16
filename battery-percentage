@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# Returns the current battery state
-# Symbol found at https://coolsymbol.com/
-echo -e 🔋$(pmset -g batt | egrep -o --color=never "\d{1,3}%")
